@@ -1,85 +1,86 @@
 # 👑 MI NEXUS AI — Version 2 (Premium Broadcast Edition)
 
-Trading-session broadcaster bot jo groups/channels me poora session live dikhata hai:
-Session Start → Signal (UP/DOWN sticker + premium analysis card) → Community WIN/LOSS voting → Result card → Session Close.
+Sirf **Owner (Telegram ID `8865257002`)** ye bot use kar sakta hai — koi aur user private
+chat me `/start` bhi kare to bot seedha reply karta hai:
+> 🚫 This bot is not available for you.
 
-**Sirf Owner (Telegram ID `8865257002`) is bot ko chala sakta hai.** Koi aur user commands
-nahi chala sakta — sirf WIN/LOSS buttons dabaa sakta hai jo bot khud group me post karta hai.
+Group/channel me bhi sirf Owner ke commands/photos par bot react karta hai. Baaki
+members sirf **✅ WIN / ❌ LOSS** vote buttons dabaa sakte hain jo bot khud post karta hai.
 
 ---
 
 ## 🔧 Setup
 
-### 1. Environment Variables (Secrets)
+### Environment Variables (Secrets)
 | Variable | Required | Description |
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN` | ✅ | BotFather se liya gaya token |
-| `GEMINI_API_KEY` | ✅ | Google Gemini API key (chart vision analysis ke liye) |
-| `OWNER_ID` | Optional (default `8865257002`) | Sirf yehi Telegram user ID bot control kar sakti hai |
-| `VOTE_WINDOW_SECONDS` | Optional (default `45`) | Kitni der WIN/LOSS voting khuli rahegi |
+| `GEMINI_API_KEY` | ✅ | Google Gemini API key |
+| `OWNER_ID` | Optional (default `8865257002`) | Sirf yehi ID bot use kar sakti hai |
+| `VOTE_WINDOW_SECONDS` | Optional (default `45`) | WIN/LOSS voting kitni der khuli rahegi |
 
-GitHub Actions me: **Settings → Secrets and variables → Actions** me ye add karein.
+Model: **`gemini-3.5-flash`**
 
-### 2. Install (local/VPS run)
+### Run
 ```bash
 pip install -r requirements.txt
 python bot.py
 ```
-
-### 3. GitHub Actions (24/7 free hosting)
-`.github/workflows/loop.yml` aur `watchdog.yml` already included hain — jaisa aapke
-pehle repo me tha, bas ab `OWNER_ID` aur `VOTE_WINDOW_SECONDS` secrets bhi add kar sakte hain.
+GitHub Actions workflows (`loop.yml` + `watchdog.yml`) already included for 24/7 free hosting,
+same tarah jaisa aapke original repo me tha.
 
 ---
 
-## 📋 Owner Commands (sirf Owner ID se kaam karengi)
+## 📱 Owner Menu (private chat me `/start` karne par)
 
-| Command | Kaam |
+Reply-keyboard menu (jaisa original bot tha, extra buttons ke sath):
+
+| Button | Kaam |
 |---|---|
-| `/start` | Owner panel/menu dikhaye |
-| `/addgroup` | Jis group/channel me ye command bheji jaye, wahi broadcast list me register ho jata hai |
-| `/session_start` | Sabhi registered groups me "Session Start" sticker bhejta hai |
-| Chart photo bhejna (owner se) | Gemini se analysis karke premium signal card + UP/DOWN sticker + WIN/LOSS vote buttons sabhi groups me broadcast karta hai |
-| `/session_close` | Sabhi registered groups me "Session Close" sticker bhejta hai |
-| `/broadcast_on` | Broadcasting ON karein |
-| `/broadcast_off` | Broadcasting OFF karein |
-| `/status` | Bot health, broadcast state, active votes dikhata hai |
+| 📊 Analyze Chart Now | Apna chart bhejein → sirf aapko private me classic annotated-image signal milta hai |
+| 📡 Broadcast Chart to Groups | Chart bhejein → sabhi **registered** groups/channels me premium MI NEXUS card + UP/DOWN sticker + WIN/LOSS voting broadcast hota hai |
+| 🏁 Session Start | Sabhi registered groups me "Session Start" sticker |
+| 🔚 Session Close | Sabhi registered groups me "Session Close" sticker |
+| 📶 Broadcast ON / 🛑 Broadcast OFF | Broadcasting on/off karein |
+| ➕ Register This Group | (group me use karein) us chat ko broadcast list me add karta hai |
+| ⚡ Bot Status | Broadcast state, registered groups count, active votes |
+| 💡 Golden Rules | Trading tips |
+
+### Group ko register karna
+Bot ko us group/channel me add karein, phir **owner** wahan `➕ Register This Group` text bhej de
+(ya `/addgroup`) — us chat ki ID broadcast list me save ho jayegi.
+
+---
 
 ## 🗳️ WIN/LOSS Voting Flow
 
-1. Owner chart bhejta hai → bot Gemini se analysis karta hai
-2. Har registered group me: UP/DOWN sticker + premium "MI NEXUS" signal card + `✅ WIN / ❌ LOSS` buttons post hote hain
-3. Group ke sabhi members vote kar sakte hain (koi bhi apna vote WIN se LOSS ya vice-versa badal sakta hai jab tak window khuli hai)
-4. `VOTE_WINDOW_SECONDS` (default 45s) baad — jis side ke zyada votes hon, wahi final result maana jata hai
-5. Bot automatic result card post karta hai jisme total WIN/LOSS vote counts show hote hain, sath hi WIN/LOSS sticker
-
-## 🖼️ Assets Used
-Sab stickers `assets/` folder me hain (aapke bheje hue MI NEXUS PNG stickers se):
-- `sticker_session_start.png` — Session Start
-- `sticker_session_close.png` — Session Close
-- `sticker_call_up.png` — UP/CALL signal
-- `sticker_put_down.png` — DOWN/PUT signal
-- `sticker_profit.png` — WIN result
-- `sticker_loss.png` — LOSS result
-- `logo_round.png` — Card header logo
-
-## 🎨 Premium Card Design
-`card_engine.py` dark-theme "MI NEXUS" card banata hai (aapke sample jaisa):
-- Header logo + "MI NEXUS — Analyze Predict Profit"
-- Chart image panel with STRONG/UP-DOWN pills
-- "NEXT CANDLE" + confidence progress bar
-- Timeframe / Trend Bias / Market Condition + Patterns Detected
-- Market Sentiment box + Volatility box
-- Tip bar + footer
-
-Result card (`build_result_card`) WIN ya LOSS ke liye alag design + vote bar chart deta hai.
+1. Owner "Broadcast Chart to Groups" dabakar chart bhejta hai
+2. Har registered group me: UP/DOWN sticker → premium MI NEXUS analysis card → `✅ WIN / ❌ LOSS` buttons
+3. Group ke members vote karte hain (vote badal bhi sakte hain jab tak window khuli hai)
+4. `VOTE_WINDOW_SECONDS` (default 45s) baad — zyada votes wala side final result banta hai
+5. Bot khud WIN ya LOSS sticker + result card (total vote counts ke sath) post karta hai
 
 ---
 
-## ⚠️ Important Notes
-- Bot sirf Owner se photo accept karke analyze karta hai — group members chart bhej kar
-  trigger nahi kar sakte, sirf vote kar sakte hain.
-- `/addgroup` zaroor chalayein har us group/channel me jaha broadcast chahiye, warna
-  bot ko pata nahi chalega kaha bhejna hai.
-- Gemini model `gemini-2.5-flash` use ho raha hai; agar aapke pass different model
-  access hai to `bot.py` me `ANALYSIS_PROMPT` ke neeche wali line me model name badal dein.
+## 🖼️ Assets (`assets/` folder)
+- `sticker_session_start.png`, `sticker_session_close.png`
+- `sticker_call_up.png` (UP), `sticker_put_down.png` (DOWN)
+- `sticker_profit.png` (WIN), `sticker_loss.png` (LOSS)
+- `logo_round.png` — card header logo
+
+## 🎨 Card Engine (`card_engine.py`)
+Dark-theme premium "MI NEXUS" analysis card (broadcast mode) — logo header, chart panel,
+confidence bar, timeframe/trend/condition, patterns detected, sentiment + volatility boxes,
+tip bar, footer. WIN/LOSS result card shows vote totals as bar charts.
+
+Personal-mode chart replies still use the lightweight classic style: chart image with a
+colored UP/DOWN banner overlaid directly on top (fast, like the original bot).
+
+---
+
+## ⚠️ Notes
+- Non-owner users get an instant "not available" message in private chat — bot does
+  nothing else for them.
+- In groups, only the owner's photos/messages trigger anything; everyone else can only
+  press the WIN/LOSS buttons.
+- If you have access to a different Gemini model, change `MODEL_NAME` near the top of `bot.py`.
