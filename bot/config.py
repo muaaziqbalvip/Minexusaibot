@@ -31,6 +31,12 @@ RETRY_BACKOFF_SECONDS = 5
 TELEGRAM_POLL_TIMEOUT = 20       # long-poll timeout per getUpdates call
 MAX_JOBS_PER_RUN = 15            # safety cap so one workflow run can't run forever
 
+# --- Long-running loop (matches a 350-min GitHub Actions job) ---
+MAX_RUNTIME_SECONDS = 5 * 60 * 60 + 30 * 60   # 5h30m - exits before GitHub's 6h hard kill
+STATE_COMMIT_INTERVAL_SECONDS = 60             # how often the loop writes state/queue to disk
+                                                 # (workflow commits it periodically, see loop.yml)
+IDLE_SLEEP_SECONDS = 1                          # brief pause between getUpdates calls when idle
+
 # --- Branding (used by the signal image generator) ---
 BRAND_NAME = "MI NEXUS"
 BRAND_TAGLINE = "ANALYZE • PREDICT • PROFIT"
