@@ -131,9 +131,10 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img = Image.open(io.BytesIO(image_bytes))
 
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
-            contents=[img, TRADING_PROMPT]
-        )
+    model='gemini-3.5-flash',
+    contents=[img, TRADING_PROMPT]
+      )
+
 
         try:
             await status_msg.edit_text(response.text, parse_mode="Markdown")
