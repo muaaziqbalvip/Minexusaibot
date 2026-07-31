@@ -2,7 +2,9 @@ name: MI NEXUS Watchdog
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # sanity check every 15 minutes
+    # Checks frequently so the gap between one loop.yml job ending and
+    # the next starting stays small. 5 min is GitHub's real floor.
+    - cron: "*/5 * * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -13,21 +15,23 @@ jobs:
   check-and-restart:
     runs-on: ubuntu-latest
     steps:
-      - name: Check last run of poll workflow
+      - name: Check if loop workflow is currently running
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO="${{ github.repository }}"
-          LAST_STATUS=$(gh run list --workflow=poll.yml --repo "$REPO" --limit 1 --json conclusion --jq '.[0].conclusion // "none"')
-          echo "last_status=$LAST_STATUS" >> "$GITHUB_OUTPUT"
-          echo "Last poll.yml run concluded: $LAST_STATUS"
+          RUNNING=$(gh run list --workflow=loop.yml --repo "$REPO" --status in_progress --limit 1 --json databaseId --jq 'length')
+          QUEUED=$(gh run list --workflow=loop.yml --repo "$REPO" --status queued --limit 1 --json databaseId --jq 'length')
+          echo "running=$RUNNING" >> "$GITHUB_OUTPUT"
+          echo "queued=$QUEUED" >> "$GITHUB_OUTPUT"
+          echo "loop.yml in_progress=$RUNNING queued=$QUEUED"
 
-      - name: Re-trigger poll workflow if last run failed or was cancelled
-        if: steps.check.outputs.last_status == 'failure' || steps.check.outputs.last_status == 'cancelled'
+      - name: Trigger loop workflow if not running and not queued
+        if: steps.check.outputs.running == '0' && steps.check.outputs.queued == '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO="${{ github.repository }}"
-          echo "Last run was ${{ steps.check.outputs.last_status }} — triggering a fresh run."
-          gh workflow run poll.yml --repo "$REPO"
+          echo "No active loop.yml run found - starting one."
+          gh workflow run loop.yml --repo "$REPO"
