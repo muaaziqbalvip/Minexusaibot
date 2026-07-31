@@ -1,0 +1,33 @@
+name: MI NEXUS Watchdog
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # sanity check every 15 minutes
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  check-and-restart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check last run of poll workflow
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+          LAST_STATUS=$(gh run list --workflow=poll.yml --repo "$REPO" --limit 1 --json conclusion --jq '.[0].conclusion // "none"')
+          echo "last_status=$LAST_STATUS" >> "$GITHUB_OUTPUT"
+          echo "Last poll.yml run concluded: $LAST_STATUS"
+
+      - name: Re-trigger poll workflow if last run failed or was cancelled
+        if: steps.check.outputs.last_status == 'failure' || steps.check.outputs.last_status == 'cancelled'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+          echo "Last run was ${{ steps.check.outputs.last_status }} — triggering a fresh run."
+          gh workflow run poll.yml --repo "$REPO"
