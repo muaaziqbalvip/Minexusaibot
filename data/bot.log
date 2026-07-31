@@ -34,3 +34,20 @@
 2026-07-31 03:15:39,789 [WARNING] Job failed (attempt 3/3) for chat 8865257002: Gemini API error 429
 2026-07-31 03:15:40,093 [ERROR] Job permanently failed and parked: {'chat_id': 8865257002, 'message_id': 5, 'file_id': 'AgACAgQAAxkBAAMDamwQObVxFA5IomBc_Trs0c0X5JgAAukMaxsEZmlTJSAVQqzvjjsBAAMCAAN5AAM9BA', 'attempts': 3}
 2026-07-31 03:16:13,421 [INFO] Periodic state/queue write completed.
+2026-07-31 03:16:46,169 [ERROR] Gemini API error 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_con
+2026-07-31 03:16:46,169 [WARNING] Job failed (attempt 1/3) for chat 8865257002: Gemini API error 429
+2026-07-31 03:16:52,018 [ERROR] Gemini API error 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_con
+2026-07-31 03:16:52,018 [WARNING] Job failed (attempt 2/3) for chat 8865257002: Gemini API error 429
+2026-07-31 03:16:57,906 [ERROR] Gemini API error 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/gen
+2026-07-31 03:16:57,906 [WARNING] Job failed (attempt 3/3) for chat 8865257002: Gemini API error 429
+2026-07-31 03:16:58,201 [ERROR] Job permanently failed and parked: {'chat_id': 8865257002, 'message_id': 9, 'file_id': 'AgACAgQAAxkBAAMDamwQObVxFA5IomBc_Trs0c0X5JgAAukMaxsEZmlTJSAVQqzvjjsBAAMCAAN5AAM9BA', 'attempts': 3}
+2026-07-31 03:17:13,422 [INFO] Periodic state/queue write completed.

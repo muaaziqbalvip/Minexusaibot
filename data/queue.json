@@ -12,6 +12,12 @@
       "message_id": 5,
       "file_id": "AgACAgQAAxkBAAMDamwQObVxFA5IomBc_Trs0c0X5JgAAukMaxsEZmlTJSAVQqzvjjsBAAMCAAN5AAM9BA",
       "attempts": 3
+    },
+    {
+      "chat_id": 8865257002,
+      "message_id": 9,
+      "file_id": "AgACAgQAAxkBAAMDamwQObVxFA5IomBc_Trs0c0X5JgAAukMaxsEZmlTJSAVQqzvjjsBAAMCAAN5AAM9BA",
+      "attempts": 3
     }
   ]
 }
