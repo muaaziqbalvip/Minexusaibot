@@ -344,7 +344,7 @@ async def handle_chart_image_analysis(update: Update, context: ContextTypes.DEFA
             response = await loop.run_in_executor(
                 None,
                 lambda: gemini_client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.5-flash',
                     contents=[pil_img, PRO_SHORT_PROMPT]
                 )
             )
