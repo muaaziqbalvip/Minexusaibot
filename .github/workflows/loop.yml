@@ -1,86 +1,34 @@
-name: MI NEXUS Bot Loop
+name: 24/7 Telegram Trading Bot
 
 on:
+  push:
+    branches: [ main ]
   schedule:
-    # Safety-net trigger only. The loop itself runs ~5h30m per job, so
-    # this just makes sure a fresh job gets queued roughly every 6h in
-    # case the watchdog's own restart-trigger is ever delayed. Off-peak
-    # minute offset for the same reason as other workflows in this repo.
-    - cron: "12 */6 * * *"
-  workflow_dispatch: {}
-
-concurrency:
-  group: mi-nexus-bot-loop
-  # Never cancel a live run just because the schedule fired again -
-  # only the watchdog or this workflow's own natural exit should end it.
-  cancel-in-progress: false
-
-permissions:
-  contents: write   # needed to commit state/queue periodically
+    # ہر 5 گھنٹے بعد خود کار طریقے سے نیا سیشن چلا دے گا تاکہ بوٹ بند نہ ہو
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
 
 jobs:
-  run-bot-loop:
+  run-bot:
     runs-on: ubuntu-latest
-    # GitHub hard-kills any job at 6h no matter what. loop_run.py exits
-    # itself at 5h30m so there's always time to commit final state before
-    # that happens. timeout-minutes here is just a backstop slightly
-    # above that, well under the 6h ceiling.
-    timeout-minutes: 350
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Start background state-committer
-        # loop_run.py writes data/state.json + data/queue.json to disk
-        # every ~60s (see STATE_COMMIT_INTERVAL_SECONDS), but a workflow
-        # step can't commit *during* a still-running previous step. This
-        # background loop watches the files and commits+pushes whenever
-        # they change, independent of the bot process itself.
-        run: |
-          (
-            git config user.name "mi-nexus-bot"
-            git config user.email "actions@users.noreply.github.com"
-            while true; do
-              sleep 90
-              if ! git diff --quiet -- data/state.json data/queue.json 2>/dev/null; then
-                git add data/state.json data/queue.json data/bot.log 2>/dev/null || true
-                git commit -m "chore: periodic state sync [skip ci]" --quiet || true
-                git pull --rebase --quiet || true
-                git push --quiet || echo "push failed, will retry next cycle"
-              fi
-            done
-          ) &
-          echo "STATE_COMMITTER_PID=$!" >> "$GITHUB_ENV"
-
-      - name: Run MI NEXUS long-running loop
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python -m bot.loop_run
-
-      - name: Stop background committer
-        if: always()
-        run: kill "$STATE_COMMITTER_PID" 2>/dev/null || true
-
-      - name: Final state commit
-        if: always()
-        run: |
-          git config user.name "mi-nexus-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add data/state.json data/queue.json data/bot.log || true
-          git diff --cached --quiet || git commit -m "chore: final state on job end [skip ci]"
-          git pull --rebase --quiet || true
-          git push || echo "Nothing to push or push failed"
+    - name: Run Telegram Bot
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: |
+        python bot.py
