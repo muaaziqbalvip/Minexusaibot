@@ -75,3 +75,5 @@
 2026-07-31 03:24:47,114 [WARNING] Job failed (attempt 3/3) for chat 8865257002: Gemini API error 429
 2026-07-31 03:24:47,426 [ERROR] Job permanently failed and parked: {'chat_id': 8865257002, 'message_id': 13, 'file_id': 'AgACAgQAAxkBAAMNamwVcrpRLvVOHOSvoUAPvgd4IPwAAuoMaxsEZmlTJGaD2EX5cuABAAMCAAN5AAM9BA', 'attempts': 3}
 2026-07-31 03:25:13,429 [INFO] Periodic state/queue write completed.
+2026-07-31 03:26:13,430 [INFO] Periodic state/queue write completed.
+2026-07-31 03:27:13,431 [INFO] Periodic state/queue write completed.
